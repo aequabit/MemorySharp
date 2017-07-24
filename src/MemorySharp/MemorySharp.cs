@@ -281,7 +281,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the value is read.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <returns>A value.</returns>
-        public T Read<T>(IntPtr address, bool isRelative = true)
+        public T Read<T>(IntPtr address, bool isRelative = false)
         {
             return MarshalType<T>.ByteArrayToObject(ReadBytes(address, MarshalType<T>.Size, isRelative));
         }
@@ -292,7 +292,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the value is read.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <returns>A value.</returns>
-        public T Read<T>(Enum address, bool isRelative = true)
+        public T Read<T>(Enum address, bool isRelative = false)
         {
             return Read<T>(new IntPtr(Convert.ToInt64(address)), isRelative);
         }
@@ -304,7 +304,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="count">The number of cells in the array.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <returns>An array.</returns>
-        public T[] Read<T>(IntPtr address, int count, bool isRelative = true)
+        public T[] Read<T>(IntPtr address, int count, bool isRelative = false)
         {
             // Allocate an array to store the results
             var array = new T[count];
@@ -336,7 +336,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="count">The number of cells in the array.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <returns>An array.</returns>
-        public T[] Read<T>(Enum address, int count, bool isRelative = true)
+        public T[] Read<T>(Enum address, int count, bool isRelative = false)
         {
             return Read<T>(new IntPtr(Convert.ToInt64(address)), count, isRelative);
         }
@@ -349,7 +349,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="count">The number of cells.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <returns>The array of bytes.</returns>
-        protected byte[] ReadBytes(IntPtr address, int count, bool isRelative = true)
+        protected byte[] ReadBytes(IntPtr address, int count, bool isRelative = false)
         {
             return MemoryCore.ReadBytes(Handle, isRelative ? MakeAbsolute(address) : address, count);
         }
@@ -363,7 +363,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
         /// <returns>The string.</returns>
-        public string ReadString(IntPtr address, Encoding encoding, bool isRelative = true, int maxLength = 512)
+        public string ReadString(IntPtr address, Encoding encoding, bool isRelative = false, int maxLength = 512)
         {
             // Read the string
             var data = encoding.GetString(ReadBytes(address, maxLength, isRelative));
@@ -382,7 +382,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
         /// <returns>The string.</returns>
-        public string ReadString(Enum address, Encoding encoding, bool isRelative = true, int maxLength = 512)
+        public string ReadString(Enum address, Encoding encoding, bool isRelative = false, int maxLength = 512)
         {
             return ReadString(new IntPtr(Convert.ToInt64(address)), encoding, isRelative, maxLength);
         }
@@ -393,7 +393,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
         /// <returns>The string.</returns>
-        public string ReadString(IntPtr address, bool isRelative = true, int maxLength = 512)
+        public string ReadString(IntPtr address, bool isRelative = false, int maxLength = 512)
         {
             return ReadString(address, Encoding.UTF8, isRelative, maxLength);
         }
@@ -404,7 +404,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
         /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
         /// <returns>The string.</returns>
-        public string ReadString(Enum address, bool isRelative = true, int maxLength = 512)
+        public string ReadString(Enum address, bool isRelative = false, int maxLength = 512)
         {
             return ReadString(new IntPtr(Convert.ToInt64(address)), isRelative, maxLength);
         }
@@ -417,7 +417,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the value is written.</param>
         /// <param name="value">The value to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void Write<T>(IntPtr address, T value, bool isRelative = true)
+        public void Write<T>(IntPtr address, T value, bool isRelative = false)
         {
             WriteBytes(address, MarshalType<T>.ObjectToByteArray(value), isRelative);
         }
@@ -428,7 +428,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the value is written.</param>
         /// <param name="value">The value to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void Write<T>(Enum address, T value, bool isRelative = true)
+        public void Write<T>(Enum address, T value, bool isRelative = false)
         {
             Write(new IntPtr(Convert.ToInt64(address)), value, isRelative);
         }
@@ -439,7 +439,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the values is written.</param>
         /// <param name="array">The array to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void Write<T>(IntPtr address, T[] array, bool isRelative = true)
+        public void Write<T>(IntPtr address, T[] array, bool isRelative = false)
         {
             // Allocate an array containing the values of the array converted into bytes
             var valuesInBytes = new byte[MarshalType<T>.Size * array.Length];
@@ -460,7 +460,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the values is written.</param>
         /// <param name="array">The array to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void Write<T>(Enum address, T[] array, bool isRelative = true)
+        public void Write<T>(Enum address, T[] array, bool isRelative = false)
         {
             Write(new IntPtr(Convert.ToInt64(address)), array, isRelative);
         }
@@ -472,7 +472,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the array is written.</param>
         /// <param name="byteArray">The array of bytes to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        protected void WriteBytes(IntPtr address, byte[] byteArray, bool isRelative = true)
+        protected void WriteBytes(IntPtr address, byte[] byteArray, bool isRelative = false)
         {
             // Change the protection of the memory to allow writable
             using (new MemoryProtection(this, isRelative ? MakeAbsolute(address) : address, MarshalType<byte>.Size * byteArray.Length))
@@ -491,7 +491,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="text">The text to write.</param>
         /// <param name="encoding">The encoding used.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void WriteString(IntPtr address, string text, Encoding encoding, bool isRelative = true)
+        public void WriteString(IntPtr address, string text, Encoding encoding, bool isRelative = false)
         {
             // Write the text
             WriteBytes(address, encoding.GetBytes(text + '\0'), isRelative);
@@ -503,7 +503,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="text">The text to write.</param>
         /// <param name="encoding">The encoding used.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void WriteString(Enum address, string text, Encoding encoding, bool isRelative = true)
+        public void WriteString(Enum address, string text, Encoding encoding, bool isRelative = false)
         {
             WriteString(new IntPtr(Convert.ToInt64(address)), text, encoding, isRelative);
         }
@@ -513,7 +513,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the string is written.</param>
         /// <param name="text">The text to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void WriteString(IntPtr address, string text, bool isRelative = true)
+        public void WriteString(IntPtr address, string text, bool isRelative = false)
         {
             WriteString(address, text, Encoding.UTF8, isRelative);
         }
@@ -523,7 +523,7 @@ namespace Binarysharp.MemoryManagement
         /// <param name="address">The address where the string is written.</param>
         /// <param name="text">The text to write.</param>
         /// <param name="isRelative">[Optional] State if the address is relative to the main module.</param>
-        public void WriteString(Enum address, string text, bool isRelative = true)
+        public void WriteString(Enum address, string text, bool isRelative = false)
         {
             WriteString(new IntPtr(Convert.ToInt64(address)), text, isRelative);
         }
